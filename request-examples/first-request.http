@@ -1,0 +1,17 @@
+GET https://admin:admin@192.168.100.4:8111/authenticationTest.html?csrf
+Accept: application/json
+
+###
+GET http://admin:admin@localhost:8111/app/rest/agents/id:1
+Accept: application/json
+
+###
+GET http://admin:admin@localhost:8111/app/rest/agents/
+Accept: application/json
+
+###
+###
+### Get all projects
+GET http://admin:admin@localhost:8111/app/rest/projects/
+Accept: application/json
+###
