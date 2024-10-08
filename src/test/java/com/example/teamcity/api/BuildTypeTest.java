@@ -1,5 +1,9 @@
 package com.example.teamcity.api;
 
+import com.example.teamcity.api.enums.Endpoint;
+import com.example.teamcity.api.models.User;
+import com.example.teamcity.api.requests.checked.CheckedBase;
+import com.example.teamcity.api.spec.Specifications;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -15,7 +19,15 @@ public class BuildTypeTest extends BaseApiTest {
     @Tags({@Tag("Positive"), @Tag("CRUD")})
     @DisplayName("User should be able to create build type")
     void userCreatesBuildTypeTest() {
-        step("Create user");
+        step("Create user", () -> {
+            var user = User.builder()
+                    .username("name")
+                    .password("password")
+                    .build();
+
+            var requester = new CheckedBase<User>(Specifications.superUserAuth(), Endpoint.USERS);
+            requester.create(user);
+        });
         step("Create project by user");
         step("Create build type for project");
         step("Check buildType was created successfully with correct data");
@@ -25,7 +37,9 @@ public class BuildTypeTest extends BaseApiTest {
     @Tags({@Tag("Negative"), @Tag("CRUD")})
     @DisplayName("User should not be able to create two build types with the same id")
     void userCreatesTwoBuildTypesWithTheSameIdTest() {
-        step("Create user");
+        step("Create user", () -> {
+
+        });
         step("Create project by user");
         step("Create buildType1 for project by user");
         step("Check buildType2 with same id as buildType1 for project by user");
