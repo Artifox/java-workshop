@@ -17,6 +17,7 @@ ext {
     aspectJVersion = '1.9.22.1'
     jacksonVersion = '2.18.0'
     slf4jVersion = '2.0.16'
+    assertJVersion = '3.26.3'
 }
 
 configurations {
@@ -34,8 +35,9 @@ dependencies {
     implementation "io.qameta.allure:allure-junit5"
     implementation "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"
     implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
-    implementation 'org.slf4j:slf4j-api:2.0.16'
+    implementation "org.slf4j:slf4j-api:$slf4jVersion"
 
+    testImplementation "org.assertj:assertj-core:$assertJVersion"
 
     agent "org.aspectj:aspectjweaver:$aspectJVersion"
 

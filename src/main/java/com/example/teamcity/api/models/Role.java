@@ -3,17 +3,18 @@ package com.example.teamcity.api.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
-import java.util.List;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Steps extends BaseModel {
+public class Role extends BaseModel {
 
-    private Integer count;
-    private List<Step> step;
+    @Builder.Default
+    private String roleId = "SYSTEM_ADMIN";
+    @Builder.Default
+    private String scope = "g";
 
 }

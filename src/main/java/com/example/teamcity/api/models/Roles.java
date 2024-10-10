@@ -7,13 +7,12 @@ import java.util.List;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Steps extends BaseModel {
+public class Roles extends BaseModel {
 
-    private Integer count;
-    private List<Step> step;
+    List<Role> role;
 
 }
