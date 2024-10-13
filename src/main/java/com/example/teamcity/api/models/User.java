@@ -12,6 +12,7 @@ import lombok.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @EqualsAndHashCode(callSuper = true)
 public class User extends BaseModel {
+    private String id;
     @Random
     private String username;
     @Random

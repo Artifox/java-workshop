@@ -27,22 +27,16 @@ public class BuildTypeTest extends BaseApiTest {
     @Tags({@Tag("Positive"), @Tag("CRUD")})
     @DisplayName("User should be able to create build type")
     void userCreatesBuildTypeTest() {
-        var user = generate(User.class);
+        superUserCheckedRequests.getRequest(USERS).create(testData.getUser());
+        var userCheckRequests = new CheckedRequests(Specifications.authSpec(testData.getUser()));
 
-        superUserCheckedRequests.getRequest(USERS).create(user);
-        var userCheckRequests = new CheckedRequests(Specifications.authSpec(user));
+        userCheckRequests.<Project>getRequest(PROJECTS).create(testData.getProject());
 
-        var project = generate(Project.class);
+        userCheckRequests.getRequest(BUILD_TYPES).create(testData.getBuildType());
 
-        project = userCheckRequests.<Project>getRequest(PROJECTS).create(project);
-
-        var buildType = generate(Collections.singletonList(project), BuildType.class);
-
-        userCheckRequests.getRequest(BUILD_TYPES).create(buildType);
-
-        var createdBuildType = userCheckRequests.<BuildType>getRequest(BUILD_TYPES).read(buildType.getId());
-            softy.assertThat(buildType.getName())
-                    .as("Check buildType name. Expected: %s, but Actual: %s", buildType.getName(), createdBuildType.getName())
+        var createdBuildType = userCheckRequests.<BuildType>getRequest(BUILD_TYPES).read(testData.getBuildType().getId());
+            softy.assertThat(testData.getBuildType().getName())
+                    .as("Check buildType name. Expected: %s, but Actual: %s", testData.getBuildType().getName(), createdBuildType.getName())
                     .isEqualTo(createdBuildType.getName());
 
     }
@@ -51,27 +45,22 @@ public class BuildTypeTest extends BaseApiTest {
     @Tags({@Tag("Negative"), @Tag("CRUD")})
     @DisplayName("User should not be able to create two build types with the same id")
     void userCreatesTwoBuildTypesWithTheSameIdTest() {
-        var user = generate(User.class);
+        var buildTypeWithSameId = generate(Collections.singletonList(testData.getProject()), BuildType.class, testData.getBuildType().getId());
 
-        superUserCheckedRequests.getRequest(USERS).create(user);
-        var userCheckRequests = new CheckedRequests(Specifications.authSpec(user));
+        superUserCheckedRequests.getRequest(USERS).create(testData.getUser());
+        var userCheckRequests = new CheckedRequests(Specifications.authSpec(testData.getUser()));
 
-        var project = generate(Project.class);
+        userCheckRequests.<Project>getRequest(PROJECTS).create(testData.getProject());
 
-        project = userCheckRequests.<Project>getRequest(PROJECTS).create(project);
-
-        var buildType1 = generate(Collections.singletonList(project), BuildType.class);
-        var buildType2 = generate(Collections.singletonList(project), BuildType.class, buildType1.getId());
-
-        userCheckRequests.getRequest(BUILD_TYPES).create(buildType1);
-        new UncheckedBase(Specifications.authSpec(user), BUILD_TYPES)
-                .create(buildType2)
+        userCheckRequests.getRequest(BUILD_TYPES).create(testData.getBuildType());
+        new UncheckedBase(Specifications.authSpec(testData.getUser()), BUILD_TYPES)
+                .create(buildTypeWithSameId)
                 .then()
                 .assertThat().statusCode(HttpStatus.SC_BAD_REQUEST)
                 .body(Matchers.containsString(
                         String.format(
                                 "The build configuration / template ID \"%s\" is already used by another configuration or template",
-                                buildType1.getId())
+                                testData.getBuildType().getId())
                 ));
     }
 
