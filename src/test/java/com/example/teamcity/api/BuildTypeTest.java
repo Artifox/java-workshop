@@ -4,7 +4,10 @@ import com.example.teamcity.api.models.BuildType;
 import com.example.teamcity.api.models.Project;
 import com.example.teamcity.api.models.User;
 import com.example.teamcity.api.requests.CheckedRequests;
+import com.example.teamcity.api.requests.unchecked.UncheckedBase;
 import com.example.teamcity.api.spec.Specifications;
+import org.apache.http.HttpStatus;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -35,7 +38,6 @@ public class BuildTypeTest extends BaseApiTest {
 
         var buildType = generate(Collections.singletonList(project), BuildType.class);
 
-
         userCheckRequests.getRequest(BUILD_TYPES).create(buildType);
 
         var createdBuildType = userCheckRequests.<BuildType>getRequest(BUILD_TYPES).read(buildType.getId());
@@ -49,13 +51,28 @@ public class BuildTypeTest extends BaseApiTest {
     @Tags({@Tag("Negative"), @Tag("CRUD")})
     @DisplayName("User should not be able to create two build types with the same id")
     void userCreatesTwoBuildTypesWithTheSameIdTest() {
-        step("Create user", () -> {
+        var user = generate(User.class);
 
-        });
-        step("Create project by user");
-        step("Create buildType1 for project by user");
-        step("Check buildType2 with same id as buildType1 for project by user");
-        step("Check buildType2 was not created with bad request code");
+        superUserCheckedRequests.getRequest(USERS).create(user);
+        var userCheckRequests = new CheckedRequests(Specifications.authSpec(user));
+
+        var project = generate(Project.class);
+
+        project = userCheckRequests.<Project>getRequest(PROJECTS).create(project);
+
+        var buildType1 = generate(Collections.singletonList(project), BuildType.class);
+        var buildType2 = generate(Collections.singletonList(project), BuildType.class, buildType1.getId());
+
+        userCheckRequests.getRequest(BUILD_TYPES).create(buildType1);
+        new UncheckedBase(Specifications.authSpec(user), BUILD_TYPES)
+                .create(buildType2)
+                .then()
+                .assertThat().statusCode(HttpStatus.SC_BAD_REQUEST)
+                .body(Matchers.containsString(
+                        String.format(
+                                "The build configuration / template ID \"%s\" is already used by another configuration or template",
+                                buildType1.getId())
+                ));
     }
 
     @Test
