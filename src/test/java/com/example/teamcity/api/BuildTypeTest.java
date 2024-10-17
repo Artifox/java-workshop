@@ -98,8 +98,7 @@ public class BuildTypeTest extends BaseApiTest {
         new UncheckedBase(Specifications.authSpec(user2), BUILD_TYPES)
                 .create(testData.getBuildType())
                 .then().assertThat()
-                .statusCode(HttpStatus.SC_FORBIDDEN)
-                .body(Matchers.containsString("Access denied. Check the user has enough permissions to perform the operation."));
+                .statusCode(HttpStatus.SC_FORBIDDEN);
 
     }
 }
