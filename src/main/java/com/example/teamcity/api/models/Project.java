@@ -7,15 +7,16 @@ import lombok.*;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class User extends BaseModel {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Project extends BaseModel{
+
+    @Random
     private String id;
     @Random
-    private String username;
-    @Random
-    private String password;
-    private Roles roles;
+    private String name;
+    private String locator;
+
 }
