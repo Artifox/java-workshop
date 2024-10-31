@@ -1,6 +1,6 @@
 
 ### Constants
-@host= 192.168.100.4
+@host= 192.168.100.3
 @user= admin
 @password = admin
 
@@ -9,7 +9,7 @@
 @buildTypeId = {{$random.alphabetic(10)}}
 
 
-GET http://{{user}}:{{password}}@{{host}}:8111/authenticationTest.html?csrf
+GET http://{{user}}:{{password}}@{{host}}:8111/app/rest/roles
 Accept: application/json
 
 ###
