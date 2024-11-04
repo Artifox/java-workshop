@@ -14,6 +14,8 @@ import java.util.Map;
 
 public class BaseUiTest extends BaseTest {
 
+    protected static final String REPO_URL = "https://github.com/AlexPshe/spring-core-for-qa";
+
     @BeforeAll
     public static void setupUiTest() {
         Configuration.browser = Config.getProperty("browser");
@@ -32,7 +34,6 @@ public class BaseUiTest extends BaseTest {
     }
 
     protected void loginAs(User user) {
-        superUserCheckedRequests.getRequest(Endpoint.USERS).create(testData.getUser());
         LoginPage.open().login(user);
     }
 

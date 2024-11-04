@@ -2,20 +2,27 @@ package com.example.teamcity.ui;
 
 import com.example.teamcity.api.enums.Endpoint;
 import com.example.teamcity.api.models.Project;
+import com.example.teamcity.api.requests.CheckedRequests;
+import com.example.teamcity.api.spec.Specifications;
 import com.example.teamcity.ui.pages.ProjectPage;
 import com.example.teamcity.ui.pages.ProjectsPage;
 import com.example.teamcity.ui.pages.admin.CreateProjectPage;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.text;
+import static com.example.teamcity.api.enums.Endpoint.PROJECTS;
 import static io.qameta.allure.Allure.step;
 
 public class CreateProjectTest extends BaseUiTest {
 
-    public static final String REPO_URL = "https://github.com/AlexPshe/spring-core-for-qa";
+    @BeforeEach
+    void setup() {
+        superUserCheckedRequests.getRequest(Endpoint.USERS).create(testData.getUser());
+    }
 
     @Test
     @Tag("Regression")
@@ -32,7 +39,9 @@ public class CreateProjectTest extends BaseUiTest {
 
         // проверка состояния API
         // (корректность отправки данных с UI на API)
-        var createdProject = superUserCheckedRequests.<Project>getRequest(Endpoint.PROJECTS).read("name:" + testData.getProject().getName());
+        var createdProject = superUserCheckedRequests
+                .<Project>getRequest(Endpoint.PROJECTS)
+                .read("name:" + testData.getProject().getName());
         softy.assertThat(createdProject).isNotNull();
 
         // проверка состояния UI
