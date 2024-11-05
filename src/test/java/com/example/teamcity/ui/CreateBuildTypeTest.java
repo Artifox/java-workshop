@@ -7,23 +7,30 @@ import com.example.teamcity.api.requests.CheckedRequests;
 import com.example.teamcity.api.spec.Specifications;
 import com.example.teamcity.ui.pages.ProjectPage;
 import com.example.teamcity.ui.pages.admin.CreateBuildTypePage;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import static com.codeborne.selenide.Condition.exactText;
 import static com.example.teamcity.api.enums.Endpoint.PROJECTS;
 
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreateBuildTypeTest extends BaseUiTest {
+
+    Project createdProject;
 
     @BeforeEach
     void setup() {
         superUserCheckedRequests.getRequest(Endpoint.USERS).create(testData.getUser());
         var userCheckRequests = new CheckedRequests(Specifications.authSpec(testData.getUser()));
-        userCheckRequests.<Project>getRequest(PROJECTS).create(testData.getProject());
+        createdProject = userCheckRequests.<Project>getRequest(PROJECTS).create(testData.getProject());
     }
 
     @Test
+    @Tag("Positive")
     @Tag("Regression")
     @DisplayName("User should be able to create build type for project")
     void createBuildTypeForProject() {
@@ -47,6 +54,22 @@ public class CreateBuildTypeTest extends BaseUiTest {
                 .getBuildTypes().stream()
                 .anyMatch(buildType -> buildType.getName().text().equals(testData.getBuildType().getName()));
         softy.assertThat(foundBuildType).isTrue();
+    }
+
+    @Test
+    @Tag("Negative")
+    @Tag("Regression")
+    @DisplayName("User should not be able to create build type with invalid repository url")
+    void createBuildTypeForProjectWithInvalidRepoUrl() {
+        loginAs(testData.getUser());
+
+        var createBuildTypePage = CreateBuildTypePage
+                .open(createdProject.getId());
+        createBuildTypePage
+                .createBuildTypeWithRepoUrlWithoutValidation("random_text_instead_url");
+        createBuildTypePage
+                .getUrlNotRecognizedMessage()
+                .shouldHave(exactText("Cannot create a project using the specified URL. The URL is not recognized."));
     }
 
 }

@@ -2,8 +2,6 @@ package com.example.teamcity.ui;
 
 import com.example.teamcity.api.enums.Endpoint;
 import com.example.teamcity.api.models.Project;
-import com.example.teamcity.api.requests.CheckedRequests;
-import com.example.teamcity.api.spec.Specifications;
 import com.example.teamcity.ui.pages.ProjectPage;
 import com.example.teamcity.ui.pages.ProjectsPage;
 import com.example.teamcity.ui.pages.admin.CreateProjectPage;
@@ -12,9 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.text;
-import static com.example.teamcity.api.enums.Endpoint.PROJECTS;
 import static io.qameta.allure.Allure.step;
 
 public class CreateProjectTest extends BaseUiTest {
