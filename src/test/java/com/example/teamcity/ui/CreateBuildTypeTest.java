@@ -5,6 +5,7 @@ import com.example.teamcity.api.models.BuildType;
 import com.example.teamcity.api.models.Project;
 import com.example.teamcity.api.requests.CheckedRequests;
 import com.example.teamcity.api.spec.Specifications;
+import com.example.teamcity.ui.pages.ProjectPage;
 import com.example.teamcity.ui.pages.admin.CreateBuildTypePage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,12 +36,17 @@ public class CreateBuildTypeTest extends BaseUiTest {
                 .createBuildTypeWithRepoUrl(REPO_URL)
                 .setupBuildConfiguration(testData.getBuildType().getName());
 
+        //проверка через API
         var createdBuildType = superUserCheckedRequests
                 .<BuildType>getRequest(Endpoint.BUILD_TYPES)
                 .read("name:" + testData.getBuildType().getName());
         softy.assertThat(createdBuildType).isNotNull();
 
-
+        //проверка на UI
+        var foundBuildType = ProjectPage.open(createdProject.getId())
+                .getBuildTypes().stream()
+                .anyMatch(buildType -> buildType.getName().text().equals(testData.getBuildType().getName()));
+        softy.assertThat(foundBuildType).isTrue();
     }
 
 }

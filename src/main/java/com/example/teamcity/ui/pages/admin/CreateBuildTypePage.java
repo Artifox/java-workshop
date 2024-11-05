@@ -19,6 +19,8 @@ public class CreateBuildTypePage extends CreateBasePage {
     public void setupBuildConfiguration(String buildTypeName) {
         buildTypeNameInput.val(buildTypeName);
         submitButton.click();
+
+        //здесь должна создаваться страница
     }
 
 }
