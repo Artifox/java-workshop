@@ -7,6 +7,7 @@ public interface CrudInterface {
     Object create(BaseModel model);
 
     Object read(String id);
+    Object readAll();
 
     Object update(String id, BaseModel model);
 

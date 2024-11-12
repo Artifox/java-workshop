@@ -14,18 +14,22 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static com.codeborne.selenide.Condition.exactText;
+import static com.example.teamcity.api.enums.Endpoint.BUILD_TYPES;
 import static com.example.teamcity.api.enums.Endpoint.PROJECTS;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreateBuildTypeTest extends BaseUiTest {
 
     Project createdProject;
+    CheckedRequests userCheckRequests;
 
     @BeforeEach
     void setup() {
         superUserCheckedRequests.getRequest(Endpoint.USERS).create(testData.getUser());
-        var userCheckRequests = new CheckedRequests(Specifications.authSpec(testData.getUser()));
+        userCheckRequests = new CheckedRequests(Specifications.authSpec(testData.getUser()));
         createdProject = userCheckRequests.<Project>getRequest(PROJECTS).create(testData.getProject());
     }
 
@@ -45,7 +49,7 @@ public class CreateBuildTypeTest extends BaseUiTest {
 
         //проверка через API
         var createdBuildType = superUserCheckedRequests
-                .<BuildType>getRequest(Endpoint.BUILD_TYPES)
+                .<BuildType>getRequest(BUILD_TYPES)
                 .read("name:" + testData.getBuildType().getName());
         softy.assertThat(createdBuildType).isNotNull();
 
@@ -61,6 +65,8 @@ public class CreateBuildTypeTest extends BaseUiTest {
     @Tag("Regression")
     @DisplayName("User should not be able to create build type with invalid repository url")
     void createBuildTypeForProjectWithInvalidRepoUrl() {
+        var buildTypeCountBefore = userCheckRequests.<BuildType>getRequest(BUILD_TYPES).readAll().size();
+
         loginAs(testData.getUser());
 
         var createBuildTypePage = CreateBuildTypePage
@@ -70,6 +76,10 @@ public class CreateBuildTypeTest extends BaseUiTest {
         createBuildTypePage
                 .getUrlNotRecognizedMessage()
                 .shouldHave(exactText("Cannot create a project using the specified URL. The URL is not recognized."));
+        var buildTypeCountAfter = userCheckRequests.getRequest(BUILD_TYPES).readAll().size();
+
+        softy.assertThat(buildTypeCountBefore).as("Number of build types wasn't changed")
+                .isEqualTo(buildTypeCountAfter);
     }
 
 }

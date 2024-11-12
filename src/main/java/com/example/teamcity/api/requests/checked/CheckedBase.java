@@ -1,13 +1,18 @@
 package com.example.teamcity.api.requests.checked;
 
 import com.example.teamcity.api.enums.Endpoint;
+import com.example.teamcity.api.factories.JsonPathFactory;
 import com.example.teamcity.api.generators.TestDataStorage;
 import com.example.teamcity.api.models.BaseModel;
+import com.example.teamcity.api.models.BuildType;
 import com.example.teamcity.api.requests.CrudInterface;
 import com.example.teamcity.api.requests.Request;
 import com.example.teamcity.api.requests.unchecked.UncheckedBase;
+import io.restassured.common.mapper.TypeRef;
 import io.restassured.specification.RequestSpecification;
 import org.apache.http.HttpStatus;
+
+import java.util.List;
 
 @SuppressWarnings("unchecked")
 public final class CheckedBase<T extends BaseModel> extends Request implements CrudInterface {
@@ -34,6 +39,14 @@ public final class CheckedBase<T extends BaseModel> extends Request implements C
                 .read(id)
                 .then().assertThat().statusCode(HttpStatus.SC_OK)
                 .extract().as(endpoint.getModelClass());
+    }
+
+    @Override
+    public List<T> readAll() {
+        return uncheckedBase.readAll()
+                .then().assertThat().statusCode(HttpStatus.SC_OK)
+                .extract()
+                .jsonPath().getList(JsonPathFactory.getJsonPath(endpoint.getModelClass()));
     }
 
     @Override
