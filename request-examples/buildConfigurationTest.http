@@ -1,6 +1,7 @@
 
+
 ### Constants
-@host= 192.168.100.3
+@host= 192.168.100.4
 @user= admin
 @password = admin
 
@@ -13,6 +14,16 @@ GET http://{{user}}:{{password}}@{{host}}:8111/app/rest/roles
 Accept: application/json
 
 ###
+GET http://{{user}}:{{password}}@{{host}}:8111/app/rest/buildTypes
+Accept: application/json
+
+###
+
+GET http://{{user}}:{{password}}@{{host}}:8111/app/rest/projects
+Accept: application/json
+
+###
+
 
 ### 1. Create project
 # @no-cookie-jar

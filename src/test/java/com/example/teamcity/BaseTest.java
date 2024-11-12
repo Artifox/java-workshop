@@ -1,8 +1,9 @@
-package com.example.teamcity.api;
+package com.example.teamcity;
 
 import com.example.teamcity.api.generators.TestDataStorage;
 import com.example.teamcity.api.models.TestData;
 import com.example.teamcity.api.requests.CheckedRequests;
+import com.example.teamcity.api.requests.UncheckedRequests;
 import com.example.teamcity.api.spec.Specifications;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterEach;
